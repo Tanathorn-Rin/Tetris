@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Timing</title>
+    <style>
+        body { background: #222; color: white; font-family: Arial; padding: 20px; }
+        canvas { border: 2px solid white; background: black; }
+        #debug { background: #333; padding: 10px; margin: 10px 0; height: 400px; overflow-y: scroll; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <h1>Debug Tetris Timing</h1>
+    <div id="debug"></div>
+    <canvas id="gameCanvas" width="300" height="600"></canvas>
+    
+    <script type="module">
+        const debug = document.getElementById('debug');
+        
+        function log(message) {
+            console.log(message);
+            const time = new Date().toLocaleTimeString() + '.' + new Date().getMilliseconds().toString().padStart(3, '0');
+            debug.innerHTML += time + ': ' + message + '<br>';
+            debug.scrollTop = debug.scrollHeight;
+        }
+        
+        log('Starting timing debug...');
+        
+        try {
+            const { GameEngine } = await import('./js/gameEngine.js');
+            const { GameRenderer } = await import('./js/gameRenderer.js');
+            
+            const canvas = document.getElementById('gameCanvas');
+            const context = canvas.getContext('2d');
+            
+            const gameEngine = new GameEngine({
+                boardWidth: 10,
+                boardHeight: 20,
+                initialFallSpeed: 1000, // 1 second for easy observation
+                softDropSpeed: 100
+            });
+            
+            const gameRenderer = new GameRenderer(context, context, {
+                BOARD_WIDTH: 10,
+                BOARD_HEIGHT: 20,
+                BLOCK_SIZE: 30
+            });
+            
+            let lastPieceY = -1;
+            let updateCount = 0;
+            
+            gameEngine.onGameStateChange = (gameState) => {
+                updateCount++;
+                
+                if (gameState.currentPiece) {
+                    const currentY = gameState.currentPiece.y;
+                    if (currentY !== lastPieceY) {
+                        log(`Piece moved! Y: ${lastPieceY} → ${currentY} (${gameState.currentPiece.type})`);
+                        lastPieceY = currentY;
+                    }
+                    
+                    if (updateCount % 60 === 0) { // Log every 60 updates
+                        log(`Update #${updateCount}: ${gameState.currentPiece.type} at (${gameState.currentPiece.x}, ${gameState.currentPiece.y})`);
+                    }
+                } else {
+                    log(`Update #${updateCount}: No current piece`);
+                }
+                
+                try {
+                    gameRenderer.render(gameState);
+                } catch (error) {
+                    log('Render error: ' + error.message);
+                }
+            };
+            
+            log('Starting game engine...');
+            gameEngine.start();
+            
+            // Check if game loop is running
+            let lastCheck = performance.now();
+            setInterval(() => {
+                const now = performance.now();
+                const state = gameEngine.getGameState();
+                log(`Status: ${state.status}, Updates: ${updateCount}, Time since last: ${Math.round(now - lastCheck)}ms`);
+                lastCheck = now;
+            }, 2000);
+            
+        } catch (error) {
+            log('Error: ' + error.message);
+            log('Stack: ' + error.stack);
+        }
+    </script>
+</body>
+</html>

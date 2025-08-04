@@ -1,0 +1,15 @@
+{
+  "name": "tetris-game",
+  "version": "1.0.0",
+  "description": "A classic Tetris game implementation",
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:watch": "vitest --watch"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0",
+    "vitest": "^1.0.0"
+  }
+}

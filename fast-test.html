@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fast Tetris Test</title>
+    <style>
+        body { background: #222; color: white; font-family: Arial; padding: 20px; }
+        canvas { border: 2px solid white; background: black; }
+        #info { background: #333; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Fast Tetris Test (200ms fall speed)</h1>
+    <div id="info">
+        <div>Score: <span id="score">0</span></div>
+        <div>Level: <span id="level">1</span></div>
+        <div>Status: <span id="status">Loading...</span></div>
+    </div>
+    <canvas id="gameCanvas" width="300" height="600"></canvas>
+    <canvas id="nextCanvas" width="120" height="120"></canvas>
+    
+    <script type="module">
+        try {
+            const { GameEngine } = await import('./js/gameEngine.js');
+            const { GameRenderer } = await import('./js/gameRenderer.js');
+            const { InputHandler } = await import('./js/inputHandler.js');
+            
+            const gameCanvas = document.getElementById('gameCanvas');
+            const nextCanvas = document.getElementById('nextCanvas');
+            const gameContext = gameCanvas.getContext('2d');
+            const nextContext = nextCanvas.getContext('2d');
+            
+            const gameEngine = new GameEngine({
+                boardWidth: 10,
+                boardHeight: 20,
+                initialFallSpeed: 200, // Very fast - 200ms
+                softDropSpeed: 50
+            });
+            
+            const gameRenderer = new GameRenderer(gameContext, nextContext, {
+                BOARD_WIDTH: 10,
+                BOARD_HEIGHT: 20,
+                BLOCK_SIZE: 30
+            });
+            
+            const inputHandler = new InputHandler(gameEngine);
+            inputHandler.bindEvents();
+            
+            gameEngine.onGameStateChange = (gameState) => {
+                document.getElementById('status').textContent = gameState.status;
+                document.getElementById('score').textContent = gameState.score;
+                document.getElementById('level').textContent = gameState.level;
+                
+                gameRenderer.render(gameState);
+            };
+            
+            gameEngine.start();
+            console.log('Fast test started - pieces should fall every 200ms');
+            
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('status').textContent = 'Error: ' + error.message;
+        }
+    </script>
+</body>
+</html>

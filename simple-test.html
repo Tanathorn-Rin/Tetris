@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Tetris Test</title>
+    <style>
+        body { background: #222; color: white; font-family: Arial; padding: 20px; }
+        canvas { border: 2px solid white; background: black; }
+        #log { background: #333; padding: 10px; margin: 10px 0; height: 200px; overflow-y: scroll; }
+    </style>
+</head>
+<body>
+    <h1>Simple Tetris Test</h1>
+    <div id="log"></div>
+    <canvas id="canvas" width="300" height="600"></canvas>
+    
+    <script>
+        const log = document.getElementById('log');
+        function addLog(msg) {
+            console.log(msg);
+            log.innerHTML += msg + '<br>';
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        addLog('Starting test...');
+        
+        // Test 1: Basic canvas
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        if (ctx) {
+            addLog('✓ Canvas context obtained');
+            
+            // Draw a test rectangle
+            ctx.fillStyle = 'red';
+            ctx.fillRect(50, 50, 100, 100);
+            addLog('✓ Test rectangle drawn');
+        } else {
+            addLog('❌ Failed to get canvas context');
+        }
+        
+        // Test 2: Module loading
+        addLog('Testing module imports...');
+        
+        import('./js/tetrominoes.js')
+            .then(module => {
+                addLog('✓ tetrominoes.js loaded');
+                addLog('TETROMINO_TYPES: ' + Object.keys(module.TETROMINO_TYPES).join(', '));
+                
+                return import('./js/gameEngine.js');
+            })
+            .then(module => {
+                addLog('✓ gameEngine.js loaded');
+                
+                // Test creating game engine
+                const engine = new module.GameEngine();
+                addLog('✓ GameEngine created');
+                
+                // Test starting
+                engine.start();
+                addLog('✓ GameEngine started');
+                
+                // Check state
+                const state = engine.getGameState();
+                addLog('Game state: ' + JSON.stringify(state));
+                
+            })
+            .catch(error => {
+                addLog('❌ Module import failed: ' + error.message);
+                addLog('Error details: ' + error.stack);
+            });
+    </script>
+</body>
+</html>

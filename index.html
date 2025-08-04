@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="game-container">
+        <div class="game-board">
+            <canvas id="gameCanvas" width="300" height="600"></canvas>
+        </div>
+        <div class="game-ui">
+            <div class="score-section">
+                <h2>Score</h2>
+                <div id="score">0</div>
+            </div>
+            <div class="level-section">
+                <h2>Level</h2>
+                <div id="level">1</div>
+            </div>
+            <div class="lines-section">
+                <h2>Lines</h2>
+                <div id="lines">0</div>
+            </div>
+            <div class="next-piece-section">
+                <h2>Next</h2>
+                <canvas id="nextPieceCanvas" width="120" height="120"></canvas>
+            </div>
+            <div class="status-section">
+                <h2>Status</h2>
+                <div id="status">Playing</div>
+            </div>
+            <div class="controls-section">
+                <h2>Controls</h2>
+                <div class="controls-info">
+                    <p>← → Move</p>
+                    <p>↓ Soft Drop</p>
+                    <p>↑ Rotate</p>
+                    <p>P Pause</p>
+                    <p>R Restart</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="pauseOverlay" class="overlay hidden">
+        <div class="overlay-content">
+            <h1>PAUSED</h1>
+            <p>Press P to resume</p>
+        </div>
+    </div>
+    <div id="gameOverOverlay" class="overlay hidden">
+        <div class="overlay-content">
+            <h1>GAME OVER</h1>
+            <p>Press R to restart</p>
+        </div>
+    </div>
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>
