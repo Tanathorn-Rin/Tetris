@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Debug and test files
+debug*.html
+*test.html
+
+# Optional: Lock file (uncomment if you want to exclude it)
+# package-lock.json
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
